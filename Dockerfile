@@ -32,4 +32,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "console.log('OK')" || exit 1
 
 # Start application
-CMD ["node", "main.js"]
+CMD ["node", "test-server.js"]
