@@ -5,7 +5,12 @@ const vaultEvents = require('../events');
 function addRecord({ name, value }) {
   recordUtils.validateRecord({ name, value });
   const data = fileDB.readDB();
-  const newRecord = { id: recordUtils.generateId(), name, value };
+  const newRecord = { 
+    id: recordUtils.generateId(), 
+    name, 
+    value,
+    createdAt: new Date().toISOString()  // ADD THIS
+  };
   data.push(newRecord);
   fileDB.writeDB(data);
   vaultEvents.emit('recordAdded', newRecord);
@@ -36,5 +41,19 @@ function deleteRecord(id) {
   vaultEvents.emit('recordDeleted', record);
   return record;
 }
-
-module.exports = { addRecord, listRecords, updateRecord, deleteRecord };
+function searchRecords(keyword) {
+  const data = fileDB.readDB();
+  const lowerKeyword = keyword.toLowerCase();
+  
+  return data.filter(record => {
+    // Check if any word in name starts with keyword
+    const nameWords = record.name.toLowerCase().split(' ');
+    const nameMatch = nameWords.some(word => word.startsWith(lowerKeyword));
+    
+    // Check ID match
+    const idMatch = record.id.toString().includes(keyword);
+    
+    return nameMatch || idMatch;
+  });
+}
+module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords };

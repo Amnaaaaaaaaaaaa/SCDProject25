@@ -14,7 +14,8 @@ function menu() {
 2. List Records
 3. Update Record
 4. Delete Record
-5. Exit
+5. Search Records 
+6. Exit
 =====================
   `);
 
@@ -31,12 +32,11 @@ function menu() {
         break;
 
       case '2':
-        const records = db.listRecords();
+         const records = db.listRecords();
         if (records.length === 0) console.log('No records found.');
-        else records.forEach(r => console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value}`));
+        else records.forEach(r => console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value} | Created: ${r.createdAt || 'N/A'}`));
         menu();
         break;
-
       case '3':
         rl.question('Enter record ID to update: ', id => {
           rl.question('New name: ', name => {
@@ -56,8 +56,23 @@ function menu() {
           menu();
         });
         break;
-
       case '5':
+        // Search functionality
+        rl.question('Enter search keyword: ', keyword => {
+          const results = db.searchRecords(keyword);
+          if (results.length === 0) {
+            console.log('\nNo records found.');
+          } else {
+            console.log(`\nFound ${results.length} matching record(s):`);
+            results.forEach((r, idx) => {
+              const createdDate = r.createdAt ? new Date(r.createdAt).toISOString().split('T')[0] : 'N/A';
+              console.log(`${idx + 1}. ID: ${r.id} | Name: ${r.name} | Created: ${createdDate}`);
+            });
+          }
+          menu();
+        });
+        break;
+      case '6':
         console.log('👋 Exiting NodeVault...');
         rl.close();
         break;
