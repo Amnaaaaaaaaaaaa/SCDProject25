@@ -56,4 +56,26 @@ function searchRecords(keyword) {
     return nameMatch || idMatch;
   });
 }
-module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords };
+// Sort functionality
+function sortRecords(field, order) {
+  const data = [...fileDB.readDB()]; // Create copy to avoid modifying original
+  
+  if (field === '1') {
+    // Sort by name
+    data.sort((a, b) => {
+      const comparison = a.name.localeCompare(b.name);
+      return order === '1' ? comparison : -comparison;
+    });
+  } else if (field === '2') {
+    // Sort by creation date
+    data.sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+      const comparison = dateA - dateB;
+      return order === '1' ? comparison : -comparison;
+    });
+  }
+  
+  return data;
+}
+module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords };
