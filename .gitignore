@@ -1,0 +1,7 @@
+**Add:**
+```
+node_modules/
+.env
+backups/
+export.txt
+*.log

@@ -1,10 +1,13 @@
+require('dotenv').config();
+
 const { MongoClient } = require('mongodb');
 
-// Hardcoded MongoDB connection (will move to .env later)
-const MONGO_URI = "mongodb://localhost:27017";
-const DB_NAME = "vaultdb";
-const COLLECTION_NAME = "records";
+// Load from environment variables
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017";
+const DB_NAME = process.env.DB_NAME || "vaultdb";
+const COLLECTION_NAME = process.env.COLLECTION_NAME || "records";
 
+console.log('✓ Environment variables loaded');
 let collection;
 
 async function connectDB() {
