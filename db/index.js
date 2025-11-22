@@ -1,6 +1,9 @@
 const fileDB = require('./file');
 const recordUtils = require('./record');
 const vaultEvents = require('../events');
+const fs = require('fs');
+const path = require('path');
+
 
 function addRecord({ name, value }) {
   recordUtils.validateRecord({ name, value });
@@ -78,4 +81,35 @@ function sortRecords(field, order) {
   
   return data;
 }
-module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords };
+// Export functionality (add before module.exports)
+function exportData() {
+  const data = fileDB.readDB();
+  const now = new Date();
+  const timestamp = now.toLocaleString();
+  
+  let content = '====================================\n';
+  content += 'VAULT DATA EXPORT\n';
+  content += '====================================\n';
+  content += `Export Date: ${timestamp}\n`;
+  content += `Total Records: ${data.length}\n`;
+  content += `File Name: export.txt\n`;
+  content += '====================================\n\n';
+  
+  if (data.length === 0) {
+    content += 'No records to export.\n';
+  } else {
+    data.forEach((record, index) => {
+      content += `Record ${index + 1}:\n`;
+      content += '-----------------\n';
+      content += `ID: ${record.id}\n`;
+      content += `Name: ${record.name}\n`;
+      content += `Value: ${record.value}\n`;
+      content += `Created: ${record.createdAt || 'N/A'}\n`;
+      content += '\n';
+    });
+  }
+  
+  const exportPath = path.join(__dirname, '..', 'export.txt');
+  fs.writeFileSync(exportPath, content);
+}
+module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords,exportData };

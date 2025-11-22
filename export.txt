@@ -1,0 +1,29 @@
+====================================
+VAULT DATA EXPORT
+====================================
+Export Date: 11/22/2025, 10:08:23 PM
+Total Records: 3
+File Name: export.txt
+====================================
+
+Record 1:
+-----------------
+ID: 1763830018199
+Name: Amna Malik
+Value: 3243
+Created: 2025-11-22T16:46:58.199Z
+
+Record 2:
+-----------------
+ID: 1763830096005
+Name: Ali Khan
+Value: 5423
+Created: 2025-11-22T16:48:16.005Z
+
+Record 3:
+-----------------
+ID: 1763830105066
+Name: Alina
+Value: 5421
+Created: 2025-11-22T16:48:25.066Z
+
