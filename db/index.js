@@ -16,6 +16,10 @@ function addRecord({ name, value }) {
   };
   data.push(newRecord);
   fileDB.writeDB(data);
+  
+  // CREATE BACKUP AFTER ADD
+  createBackup(data);
+  
   vaultEvents.emit('recordAdded', newRecord);
   return newRecord;
 }
@@ -41,9 +45,14 @@ function deleteRecord(id) {
   if (!record) return null;
   data = data.filter(r => r.id !== id);
   fileDB.writeDB(data);
+  
+  // CREATE BACKUP AFTER DELETE
+  createBackup(data);
+  
   vaultEvents.emit('recordDeleted', record);
   return record;
 }
+
 function searchRecords(keyword) {
   const data = fileDB.readDB();
   const lowerKeyword = keyword.toLowerCase();
@@ -111,5 +120,26 @@ function exportData() {
   
   const exportPath = path.join(__dirname, '..', 'export.txt');
   fs.writeFileSync(exportPath, content);
+}
+
+// Create backups directory
+const backupsDir = path.join(__dirname, '..', 'backups');
+if (!fs.existsSync(backupsDir)) {
+  fs.mkdirSync(backupsDir);
+}
+
+// Automatic backup function
+function createBackup(data) {
+  const now = new Date();
+  const timestamp = now.toISOString()
+    .replace(/T/, '_')
+    .replace(/:/g, '-')
+    .replace(/\..+/, '');
+  
+  const filename = `backup_${timestamp}.json`;
+  const filepath = path.join(backupsDir, filename);
+  
+  fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
+  console.log(`✓ Backup created: ${filename}`);
 }
 module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords,exportData };
