@@ -1,0 +1,10 @@
+**Paste:**
+```
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+backups
+*.md
+.vscode
