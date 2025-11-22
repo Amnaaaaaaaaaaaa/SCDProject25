@@ -17,7 +17,8 @@ function menu() {
 5. Search Records 
 6. Sort Records       // ADD THIS
 7. Export Data        // ADD THIS
-8. Exit 
+8. View Statistics    // ADD THIS
+9. Exit 
  
 =====================
   `);
@@ -98,7 +99,12 @@ function menu() {
         console.log('✅ Data exported successfully to export.txt');
         menu();
         break;
-      case '8':
+     case '8':
+        // Statistics
+        db.displayStatistics();
+        menu();
+        break;
+      case '9':
         console.log('👋 Exiting NodeVault...');
         rl.close();
         break;

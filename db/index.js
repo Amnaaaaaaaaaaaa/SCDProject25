@@ -142,4 +142,50 @@ function createBackup(data) {
   fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
   console.log(`✓ Backup created: ${filename}`);
 }
-module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords,exportData };
+// Statistics functionality (add before module.exports)
+function displayStatistics() {
+  const data = fileDB.readDB();
+  const dbFile = path.join(__dirname, '..', 'data', 'vault.json');
+  
+  console.log('\n=== Vault Statistics ===');
+  console.log('--------------------------');
+  
+  if (data.length === 0) {
+    console.log('No records in vault.');
+    console.log('--------------------------');
+    return;
+  }
+  
+  // Total records
+  console.log(`Total Records: ${data.length}`);
+  
+  // Last modified
+  try {
+    const stats = fs.statSync(dbFile);
+    console.log(`Last Modified: ${stats.mtime.toLocaleString()}`);
+  } catch (error) {
+    console.log('Last Modified: N/A');
+  }
+  
+  // Longest name
+  let longestName = data[0].name;
+  data.forEach(record => {
+    if (record.name.length > longestName.length) {
+      longestName = record.name;
+    }
+  });
+  console.log(`Longest Name: ${longestName} (${longestName.length} characters)`);
+  
+  // Earliest and latest dates
+  if (data[0].createdAt) {
+    const dates = data.map(r => new Date(r.createdAt));
+    const earliestDate = new Date(Math.min(...dates));
+    const latestDate = new Date(Math.max(...dates));
+    
+    console.log(`Earliest Record: ${earliestDate.toISOString().split('T')[0]}`);
+    console.log(`Latest Record: ${latestDate.toISOString().split('T')[0]}`);
+  }
+  
+  console.log('--------------------------');
+}
+module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords,exportData, displayStatistics };
