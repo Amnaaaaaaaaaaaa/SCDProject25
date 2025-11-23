@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    volumes:
+      - mongodb-vault-data:/data/db
+    networks:
+      - nodevault-network
+
+  backend:
+    image: amnaaaaaaaa/nodevault-backend:1.0
+    container_name: nodevault-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT}:3000"
+    environment:
+      MONGO_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
+      DB_NAME: ${MONGO_DATABASE}
+      NODE_ENV: ${NODE_ENV}
+    depends_on:
+      - mongodb
+    networks:
+      - nodevault-network
+
+networks:
+  nodevault-network:
+    driver: bridge
+
+volumes:
+  mongodb-vault-data:
+    driver: local
